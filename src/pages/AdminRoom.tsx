@@ -1,4 +1,7 @@
 import { useHistory, useParams } from 'react-router-dom';
+import { FormEvent, useState } from 'react';
+import ReactModal from 'react-modal';
+
 import { useRoom } from '../hooks/useRoom';
 
 import logoImg from '../assets/images/logo.svg';
@@ -19,6 +22,8 @@ type RoomParams = {
 }
 
 export function AdminRoom() {
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
   const history = useHistory();
   const params = useParams<RoomParams>();
   const roomId = params.id;
@@ -46,14 +51,26 @@ export function AdminRoom() {
   }
 
   async function handleDeleteQuestion(questionId: string) {
-    const remove = window.confirm('Excluir pergunta?');
-    if (remove) {
-      await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
-    }
+    await database.ref(`rooms/${roomId}/questions/${questionId}`).remove();
   }
 
   function handleClickOnLogo() {
     history.push('/');
+  }
+
+  function openModal() {
+    setModalIsOpen(true);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
+
+  function handleModalAnswerDelete(event: FormEvent, questionId: string, confirm: boolean) {
+    event.preventDefault();
+    if (confirm)
+      handleDeleteQuestion(questionId);
+    closeModal();
   }
 
   return (
@@ -111,10 +128,39 @@ export function AdminRoom() {
 
                 <button
                   type="button"
-                  onClick={() => handleDeleteQuestion(q.id)}
+                  onClick={openModal}
                 >
                   <img src={deleteImg} alt="Remove question" />
                 </button>
+                <ReactModal
+                  isOpen={modalIsOpen}
+                  onRequestClose={closeModal}
+                  ariaHideApp={false}
+                  className="modal"
+                  overlayClassName="overlay"
+                >
+                  <header>
+                    <h2>Deseja realmente excluir essa pergunta?</h2>
+                  </header>
+
+                  <form>
+                    <Button
+                      onClick={(e) => handleModalAnswerDelete(e, q.id, false)}
+                      isOutlined
+                    >
+                      Cancelar
+                    </Button>
+
+                    <Button
+                      onClick={(e) => handleModalAnswerDelete(e, q.id, true)}
+                    >
+                      Excluir
+                    </Button>
+
+
+                  </form>
+                </ReactModal>
+
               </Question>
             );
           })}
