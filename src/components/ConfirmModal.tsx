@@ -1,32 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactModal from "react-modal";
 
 import '../styles/confirm-modal.scss';
 
-type ConfirmModalProps = {
-  isOpen: boolean,
-  question: string;
-  positiveAnswer?: string;
-  negativeAnswer?: string;
-
+type confirmModalProps = {
+  modalIsOpen: boolean;
+  closeModal: any;
+  children?: React.ReactNode;
 }
 
 export function ConfirmModal({
-  isOpen,
-  question,
-  positiveAnswer = "Confirmar",
-  negativeAnswer = "Cancelar",
-  ...otherProps
-}: ConfirmModalProps) {
+  modalIsOpen,
+  closeModal,
+  children
+}: confirmModalProps) {
   return (
     <ReactModal
-      isOpen={isOpen}
+      isOpen={modalIsOpen}
+      onRequestClose={closeModal}
+      ariaHideApp={false}
+      className="modal"
+      overlayClassName="overlay"
     >
-      <h2>{question}</h2>
-      <form>
-        <button onClick={(e) => e.preventDefault}>{positiveAnswer}</button>
-        <button onClick={(e) => e.preventDefault}>{negativeAnswer}</button>
-      </form>
+      {children}
     </ReactModal>
   );
 }

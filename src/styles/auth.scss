@@ -5,7 +5,7 @@
 
   aside {
     flex: 5;
-    background: #835afd;
+    background: #555555;
     color: #FFF;
     display: flex;
     flex-direction: column;
@@ -90,7 +90,7 @@
     height: 50px;
     border-radius: 8px;
     font-weight: 500;
-    background: #ea4335;
+    background: #ea4335bb;
     color: #FFF;
     display: flex;
     justify-content: center;
@@ -130,5 +130,31 @@
       background: #a8a8b3;
       margin-left: 16px;
     }
+  }
+}
+
+.shaked {
+  animation: shake .8s ease-in;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translate(.8em);
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.5);
+  }
+  10%,
+  30%,
+  50% {
+    transform: translate(-.2em);
+  }
+  70%,
+  100% {
+    transform: translate(0);
   }
 }

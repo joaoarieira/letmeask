@@ -1,6 +1,5 @@
 import { useHistory, useParams } from 'react-router-dom';
 import { FormEvent, useState } from 'react';
-import ReactModal from 'react-modal';
 
 import { useRoom } from '../hooks/useRoom';
 
@@ -12,6 +11,7 @@ import answerImg from '../assets/images/answer.svg';
 import { RoomCode } from '../components/RoomCode';
 import { Button } from '../components/Button';
 import { Question } from '../components/Question';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 import '../styles/room.scss';
 
@@ -132,12 +132,10 @@ export function AdminRoom() {
                 >
                   <img src={deleteImg} alt="Remove question" />
                 </button>
-                <ReactModal
-                  isOpen={modalIsOpen}
-                  onRequestClose={closeModal}
-                  ariaHideApp={false}
-                  className="modal"
-                  overlayClassName="overlay"
+
+                <ConfirmModal
+                  modalIsOpen={modalIsOpen}
+                  closeModal={closeModal}
                 >
                   <header>
                     <h2>Deseja realmente excluir essa pergunta?</h2>
@@ -159,7 +157,7 @@ export function AdminRoom() {
 
 
                   </form>
-                </ReactModal>
+                </ConfirmModal>
 
               </Question>
             );

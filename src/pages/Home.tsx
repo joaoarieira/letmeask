@@ -1,11 +1,11 @@
 import { useHistory } from 'react-router-dom';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useRef } from 'react';
 
 import { useAuth } from '../hooks/useAuth';
 
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
-import googleIconImg from '../assets/images/google-icon.svg';
+import googleIconImg from '../assets/images/google-icon-colored.svg';
 
 import '../styles/auth.scss';
 
@@ -18,6 +18,8 @@ export function Home() {
   const history = useHistory();
 
   const { user, signInWithGoogle } = useAuth();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   async function handleCreateRoom() {
     if (!user) {
@@ -36,13 +38,21 @@ export function Home() {
     const roomRef = await database.ref(`rooms/${roomCode}`).get();
 
     if (!roomRef.exists()) {
-      alert("Ops! Essa sala não existe");
+      const { current } = inputRef;
+      if (current !== null) {
+        current.classList.add('shaked');
+        setTimeout(() => current.classList.remove('shaked'), 1000);
+      }
       setRoomCode('');
       return;
     }
 
     if (roomRef.val().closedAt) {
-      alert('Ops! Essa sala já foi encerrada');
+      const { current } = inputRef;
+      if (current !== null) {
+        current.classList.add('shaked');
+        setTimeout(() => current.classList.remove('shaked'), 1000);
+      }
       setRoomCode('');
       return;
     }
@@ -74,6 +84,7 @@ export function Home() {
               placeholder="Digite o código da sala"
               onChange={event => setRoomCode(event.target.value)}
               value={roomCode}
+              ref={inputRef}
             />
 
             <Button type="submit">

@@ -19,13 +19,13 @@ type RoomParams = {
 }
 
 export function Room() {
-  const { user } = useAuth();
+  const { user, signInWithGoogle } = useAuth();
   const history = useHistory();
   const params = useParams<RoomParams>();
   const [newQuestion, setNewQuestion] = useState('');
   const roomId = params.id;
 
-  const { questions, title } = useRoom(roomId);
+  const { questions, title, adminId } = useRoom(roomId);
 
   async function handleSendQuestion(event: FormEvent) {
     event.preventDefault();
@@ -56,6 +56,10 @@ export function Room() {
     history.push('/');
   }
 
+  function handleChangeToAdminRoom() {
+    history.push(`/admin/${roomId}`);
+  }
+
   async function handleLikeQuestion(questionId: string, likeId: string | undefined) {
     if (likeId) {
       await database.ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`).remove();
@@ -75,7 +79,13 @@ export function Room() {
             alt="Logo Letmeask"
             onClick={handleClickOnLogo}
           />
-          <RoomCode code={roomId} />
+          <div>
+            <RoomCode code={roomId} />
+            {user?.id === adminId &&
+              <Button isOutlined onClick={handleChangeToAdminRoom}>Administrador</Button>
+            }
+
+          </div>
         </div>
       </header>
 
@@ -97,7 +107,9 @@ export function Room() {
 
           <div className="form-footer">
             {!user ? (
-              <span>Para enviar uma pergunta, <button>faça seu login</button>.</span>
+              <span>
+                Para enviar uma pergunta, <button onClick={signInWithGoogle}>faça seu login</button>.
+              </span>
             ) : (
               <div className="user-info">
                 <img src={user.avatar} alt={`${user.name}'s avatar.`} />
